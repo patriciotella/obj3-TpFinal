@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="textVerduler" nsURI="http://www.TextVerduler" nsPrefix="textVerduler">
+  <eClassifiers xsi:type="ecore:EClass" name="Verduleria">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="anotaciones" upperBound="-1"
+        eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ModelCliente">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="clientes" upperBound="-1"
+        eType="#//Cliente" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="estadoDeDeuda" eType="#//EstadoDeuda"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ModelProducto">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="productos" upperBound="-1"
+        eType="#//Producto" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="valor" eType="#//ValorDelProducto"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ModelVenta">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="venta" upperBound="-1"
+        eType="#//Venta" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Venta">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="nombre" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="unaListaDeCompras" eType="#//Mercaderia"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="unImporte" eType="#//Importe"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="unTotal" eType="#//TotalDeCompra"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TotalDeCompra">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="unTotal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="unImporteTotal" eType="#//Importe"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Mercaderia">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="unaDescripcion" eType="#//Cantidad"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="nombreDeProducto" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Producto">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="nombreDeProducto" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ValorDelProducto">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="unaDescripcion" eType="#//Descripcion"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Descripcion">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="unImporte" eType="#//Importe"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="unaCantidad" eType="#//Cantidad"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Cantidad">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="unArticulo" eType="#//Articulo"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="unValor" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="unaCantidad" eType="#//Unidad"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Articulo">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="unArticulo" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Unidad">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="unaUnidad" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Cliente">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EstadoDeuda"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Importe" eSuperTypes="#//EstadoDeuda">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="valor" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="moneda" eType="#//Moneda"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Moneda">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="pesos" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+</ecore:EPackage>

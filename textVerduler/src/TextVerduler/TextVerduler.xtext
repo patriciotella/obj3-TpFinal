@@ -1,0 +1,78 @@
+grammar textVerduler.TextVerduler with org.eclipse.xtext.common.Terminals
+
+generate textVerduler "http://www.TextVerduler"
+
+Verduleria:
+	anotaciones+= (ModelCliente| ModelProducto| ModelVenta)*
+;
+
+ModelCliente:
+	(clientes+=Cliente ',' estadoDeDeuda=EstadoDeuda '.')
+;
+
+ModelProducto:
+	(productos+=Producto valor=ValorDelProducto '.')
+;
+
+ModelVenta:
+	(venta+=Venta)
+;
+
+Venta:
+	nombre=ID 'compro'
+	(unaListaDeCompras=Mercaderia ','?)*
+	'se redondea a'? unImporte=Importe ','
+	unTotal=TotalDeCompra '.'
+;
+
+TotalDeCompra:
+	unTotal=("paga"|"queda debiendo") unImporteTotal=Importe?
+;
+
+Mercaderia:
+	unaDescripcion=Cantidad
+	'de' nombreDeProducto=ID
+;
+
+Producto:
+	("Las" | "Los")
+	nombreDeProducto=ID
+;
+
+ValorDelProducto:
+	'salen' (unaDescripcion=Descripcion)
+;
+
+Descripcion:
+	(unImporte=Importe unaCantidad=Cantidad)
+;
+
+Cantidad:
+	unArticulo=Articulo?
+	unValor=INT?
+	unaCantidad=Unidad
+;
+
+Articulo:
+	unArticulo=("el"|"los")
+;
+
+Unidad:
+	unaUnidad=("kilo"|"kilos"|"medio kilo"|"cuarto kilo"|"gramos")
+;
+Cliente:
+	'Cliente' name=ID
+	;
+
+EstadoDeuda:
+	('debe' | 'al dia' | 'tiene credito')
+	Importe?
+;
+
+Importe:
+	(valor=INT moneda=Moneda)
+;
+
+Moneda:
+	 pesos="pesos"
+;
