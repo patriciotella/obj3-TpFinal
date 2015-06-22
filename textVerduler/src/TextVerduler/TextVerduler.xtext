@@ -3,7 +3,7 @@ grammar textVerduler.TextVerduler with org.eclipse.xtext.common.Terminals
 generate textVerduler "http://www.TextVerduler"
 
 Verduleria:
-	anotaciones+= (ModelCliente| ModelProducto| ModelVenta)*
+	anotaciones+= (ModelCliente| ModelProducto| Venta| ModelTarea)*
 ;
 
 ModelCliente:
@@ -14,29 +14,53 @@ ModelProducto:
 	(productos+=Producto valor=ValorDelProducto '.')
 ;
 
-ModelVenta:
-	(venta+=Venta)
+ModelTarea:
+	(tareas+=Tarea ',' horaDeInicio=HoraDeInicio ',' unaDuracion=Duracion '.' )	
+;
+
+Duracion:
+	'duracion'
+	hora=INT 'hs'
+	(minutos=INT 'minutos')? 
+;
+
+HoraDeInicio:
+	'hora de inicio' unahora=Hora
+;
+
+Hora:
+	hora=INT
+	("en punto"|"y cuarto"|"y veinte"|"y media"|"menos veinte"|"menos cuarto")
+;
+
+Tarea:
+	'Tarea:' ("limpieza del local"|"revision de" unProducto=[Producto]|"arqueo de caja" unBalance=Balance)
+;
+
+Balance:
+	'entrado' unImporte=Importe
+	'salido' unImporte=Importe
 ;
 
 Venta:
-	nombre=ID 'compro'
+	unCliente=[Cliente] 'compro'
 	(unaListaDeCompras=Mercaderia ','?)*
 	'se redondea a'? unImporte=Importe ','
 	unTotal=TotalDeCompra '.'
 ;
 
 TotalDeCompra:
-	unTotal=("paga"|"queda debiendo") unImporteTotal=Importe?
+	unTotal=("paga"|"queda debiendo") unImporte=Importe
 ;
 
 Mercaderia:
 	unaDescripcion=Cantidad
-	'de' nombreDeProducto=ID
+	'de' unProducto=[Producto]
 ;
 
 Producto:
 	("Las" | "Los")
-	nombreDeProducto=ID
+	name=ID
 ;
 
 ValorDelProducto:

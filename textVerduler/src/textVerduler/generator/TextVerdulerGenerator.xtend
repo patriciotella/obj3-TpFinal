@@ -6,6 +6,9 @@ package textVerduler.generator
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.generator.IGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess
+import textVerduler.textVerduler.Verduleria
+import static extension model.VerduleriaExtensions.*
+import textVerduler.textVerduler.ModelCliente
 
 /**
  * Generates code from your model files on save.
@@ -15,10 +18,31 @@ import org.eclipse.xtext.generator.IFileSystemAccess
 class TextVerdulerGenerator implements IGenerator {
 	
 	override void doGenerate(Resource resource, IFileSystemAccess fsa) {
-//		fsa.generateFile('greetings.txt', 'People to greet: ' + 
-//			resource.allContents
-//				.filter(typeof(Greeting))
-//				.map[name]
-//				.join(', '))
+		val verdu = resource.allContents.filter(Verduleria).head
+		val total = verdu.totalDeVentas
+		val totalEnCaja = verdu.gananciasTotales
+		fsa.generateFile(
+			'verduleria.txt',
+			'''Totales:
+			
+			Se vendio por un total de « total » pesos.
+			
+			Se recaudaron en total « totalEnCaja » pesos.
+			
+			Clientes:
+			
+			Deben:
+			Tienen Credito:
+			Al día:
+			
+			Ventas por Cliente:
+			
+			No hicieron compras:
+			
+			Productos:
+			
+			No se vendieron:
+			'''
+		)
 	}
 }
