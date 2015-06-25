@@ -19,5 +19,20 @@ class VentaExtensions {
 			}
 		}
 	}
-	
+
+	def static estadoDeCompra(Venta unaVenta) {
+		if (unaVenta.unTotal.unTotal == "queda debiendo") {
+			return ( - unaVenta.unTotal.unImporte.valor)
+		} else {
+			if (unaVenta.unImporte.valor == unaVenta.unTotal.unImporte.valor) {
+				return 0
+			} else {
+				if (unaVenta.unImporte.valor < unaVenta.unTotal.unImporte.valor) {
+					return unaVenta.unTotal.unImporte.valor - unaVenta.unImporte.valor
+				} else {
+					return unaVenta.unImporte.valor - unaVenta.unTotal.unImporte.valor
+				}
+			}
+		}
+	}
 }

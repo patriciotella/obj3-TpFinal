@@ -4,11 +4,13 @@
 package textVerduler.generator
 
 import org.eclipse.emf.ecore.resource.Resource
-import org.eclipse.xtext.generator.IGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess
+import org.eclipse.xtext.generator.IGenerator
+import textVerduler.textVerduler.Venta
 import textVerduler.textVerduler.Verduleria
+
+import static extension model.VentaExtensions.*
 import static extension model.VerduleriaExtensions.*
-import textVerduler.textVerduler.ModelCliente
 
 /**
  * Generates code from your model files on save.
@@ -16,33 +18,76 @@ import textVerduler.textVerduler.ModelCliente
  * See https://www.eclipse.org/Xtext/documentation/303_runtime_concepts.html#code-generation
  */
 class TextVerdulerGenerator implements IGenerator {
-	
+
 	override void doGenerate(Resource resource, IFileSystemAccess fsa) {
 		val verdu = resource.allContents.filter(Verduleria).head
 		val total = verdu.totalDeVentas
 		val totalEnCaja = verdu.gananciasTotales
+		val clientes = verdu.clientes
+		val ventas = verdu.ventas
+//		val productos= verdu.productos
+//		val productosVendidos=ventas.productosVendidos
+
 		fsa.generateFile(
 			'verduleria.txt',
 			'''Totales:
 			
-			Se vendio por un total de « total » pesos.
+			Se vendio por un total de «total» pesos.
 			
-			Se recaudaron en total « totalEnCaja » pesos.
+			Se recaudaron en total «totalEnCaja» pesos.
 			
 			Clientes:
 			
-			Deben:
-			Tienen Credito:
-			Al día:
+			Deben: 
+			«FOR cliente : clientes»
+			« IF(ventas.balanceCliente(cliente)<0) »
+			« cliente» « - ventas.balanceCliente(cliente) » pesos 
+			« ENDIF »
+			«ENDFOR»
 			
-			Ventas por Cliente:
+			Tienen credito: 
+			«FOR cliente : clientes»
+			« IF(ventas.balanceCliente(cliente)>0) »
+			« cliente» « ventas.balanceCliente(cliente) » pesos 
+			« ENDIF »
+			«ENDFOR»
+			
+			Al dia: 
+			«FOR cliente : clientes»
+			« IF(!ventas.forall[venta | venta.unCliente.name != cliente]) »
+«««			hay que generalizarlo, lo puse para que no aparezca el que no compro
+			« IF(ventas.balanceCliente(cliente)== 0) »
+			« cliente» 
+			« ENDIF »
+			« ENDIF »
+			«ENDFOR»
 			
 			No hicieron compras:
+			«FOR cliente : clientes»
+			« IF(ventas.forall[venta | venta.unCliente.name != cliente]) »
+			« cliente» 
+			« ENDIF »
+			«ENDFOR»
 			
 			Productos:
 			
 			No se vendieron:
+«««			«FOR producto : productos»
+«««			« IF(productosVendidos.forall[vendido | vendido!= producto]) »
+«««			« producto» 
+«««			« ENDIF »
+«««			«ENDFOR»
 			'''
 		)
+	}
+
+	def int balanceCliente(Iterable<Venta> ventas, String cliente) {
+		var resultado = 0;
+		for (venta : ventas) {
+			if (venta.unCliente.name == cliente) {
+				resultado = resultado + venta.estadoDeCompra
+			}
+		}
+		return resultado
 	}
 }
