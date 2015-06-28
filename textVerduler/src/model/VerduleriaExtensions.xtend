@@ -11,7 +11,7 @@ import textVerduler.textVerduler.ModelProducto
 class VerduleriaExtensions {
 	
 	def static totalDeVentas(Verduleria unaVerdu){
-		var valores=unaVerdu.anotaciones.filter(Venta).map[unImporte.valor]
+		var valores=unaVerdu.anotaciones.filter(Venta).map[importe.valor]
 		var resultado= 0
 		for(valor: valores){
 			resultado+=valor
@@ -43,7 +43,7 @@ class VerduleriaExtensions {
 	def static getProductosVendidos(Iterable<Venta> ventas){
 		var ArrayList<String> vendidos
 		for( venta : ventas){
-			vendidos.add(venta.unaListaDeCompras.unProducto.name)
+			vendidos.add(venta.listaDeCompras.producto.name)
 		}
 		return vendidos
 	}

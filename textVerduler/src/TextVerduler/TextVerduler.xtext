@@ -15,7 +15,7 @@ ModelProducto:
 ;
 
 ModelTarea:
-	(tareas+=Tarea ',' horaDeInicio=HoraDeInicio ',' unaDuracion=Duracion '.' )	
+	(tareas+=Tarea ',' horaDeInicio=HoraDeInicio ',' duracion=Duracion '.' )	
 ;
 
 Duracion:
@@ -34,28 +34,28 @@ Hora:
 ;
 
 Tarea:
-	'Tarea:' ("limpieza del local"|"revision de" unProducto=[Producto]|"arqueo de caja" unBalance=Balance)
+	'Tarea:' ("limpieza del local"|"revision de" producto=[Producto]|"arqueo de caja" balance=Balance)
 ;
 
 Balance:
-	'entrado' unImporte=Importe
-	'salido' unImporte=Importe
+	'entrado' importeEntrada=Importe
+	'salida' importeSalida=Importe
 ;
 
 Venta:
-	unCliente=[Cliente] 'compro'
-	(unaListaDeCompras=Mercaderia ','?)*
-	'se redondea a'? unImporte=Importe ','
-	unTotal=TotalDeCompra '.'
+	cliente=[Cliente] 'compro'
+	(listaDeCompras=Mercaderia ','?)*
+	'se redondea a'? importe=Importe ','
+	total=TotalDeCompra '.'
 ;
 
 TotalDeCompra:
-	unTotal=("paga"|"queda debiendo") unImporte=Importe
+	estado=("paga"|"queda debiendo") importe=Importe
 ;
 
 Mercaderia:
-	unaDescripcion=Cantidad
-	'de' unProducto=[Producto]
+	descripcion=Cantidad
+	'de' producto=[Producto]
 ;
 
 Producto:
@@ -64,29 +64,26 @@ Producto:
 ;
 
 ValorDelProducto:
-	'salen' (unaDescripcion=Descripcion)
+	'salen' (descripcion=PrecioPorCantidad)
 ;
 
-Descripcion:
-	(unImporte=Importe unaCantidad=Cantidad)
+PrecioPorCantidad:
+	(importe=Importe cantidad=Cantidad)
 ;
 
 Cantidad:
-	unArticulo=Articulo?
-	unValor=INT?
-	unaCantidad=Unidad
+	articulo=Articulo?
+	cantidad=INT?
+	unidad=("kilo"|"kilos"|"medio kilo"|"cuarto kilo"|"gramos")
 ;
 
 Articulo:
-	unArticulo=("el"|"los")
+	articulo=("el"|"los")
 ;
 
-Unidad:
-	unaUnidad=("kilo"|"kilos"|"medio kilo"|"cuarto kilo"|"gramos")
-;
 Cliente:
 	'Cliente' name=ID
-	;
+;
 
 EstadoDeuda:
 	('debe' | 'al dia' | 'tiene credito')
@@ -94,9 +91,5 @@ EstadoDeuda:
 ;
 
 Importe:
-	(valor=INT moneda=Moneda)
-;
-
-Moneda:
-	 pesos="pesos"
+	(valor=INT moneda="pesos")
 ;

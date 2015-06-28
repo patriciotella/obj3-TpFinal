@@ -55,7 +55,7 @@ class TextVerdulerGenerator implements IGenerator {
 			
 			Al dia: 
 			«FOR cliente : clientes»
-			« IF(!ventas.forall[venta | venta.unCliente.name != cliente.name]) »
+			« IF(!ventas.forall[venta | venta.cliente.name != cliente.name]) »
 «««			hay que generalizarlo, lo puse para que no aparezca el que no compro
 			« IF(ventas.balanceCliente(cliente)== 0) »
 			« cliente.name » 
@@ -65,7 +65,7 @@ class TextVerdulerGenerator implements IGenerator {
 			
 			No hicieron compras:
 			«FOR cliente : clientes»
-			« IF(ventas.forall[venta | venta.unCliente.name != cliente]) »
+			« IF(ventas.forall[venta | venta.cliente.name != cliente]) »
 			« cliente.name » 
 			« ENDIF »
 			«ENDFOR»
@@ -85,7 +85,7 @@ class TextVerdulerGenerator implements IGenerator {
 	def int balanceCliente(Iterable<Venta> ventas, Cliente cliente) {
 		var resultado = 0;
 		for (venta : ventas) {
-			if (venta.unCliente.name == cliente.name) {
+			if (venta.cliente.name == cliente.name) {
 				resultado = resultado + venta.estadoDeCompra
 			}
 		}

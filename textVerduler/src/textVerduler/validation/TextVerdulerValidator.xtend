@@ -8,6 +8,8 @@ import textVerduler.textVerduler.Verduleria
 import static extension model.VerduleriaExtensions.*
 import java.util.List
 import textVerduler.textVerduler.TextVerdulerPackage
+import textVerduler.textVerduler.Producto
+import textVerduler.textVerduler.ModelProducto
 
 //import org.eclipse.xtext.validation.Check
 
@@ -23,7 +25,6 @@ class TextVerdulerValidator extends AbstractTextVerdulerValidator {
 		val List<String> nombres = newArrayList()
 		verduleria.clientes.forEach [ cliente | 
 			if (nombres.contains(cliente.name))
-				// error
 				error("El cliente ya existe", 
 					cliente, 
 					cliente.eClass.getEStructuralFeature(
@@ -40,7 +41,6 @@ class TextVerdulerValidator extends AbstractTextVerdulerValidator {
 		val List<String> nombres = newArrayList()
 		verduleria.productos.forEach [ producto | 
 			if (nombres.contains(producto.name))
-				// error
 				error("El producto ya existe", 
 					producto, 
 					producto.eClass.getEStructuralFeature(
@@ -50,5 +50,17 @@ class TextVerdulerValidator extends AbstractTextVerdulerValidator {
 			else
 				nombres.add(producto.name)
 		]
+	}
+	
+	@Check
+	def checkPrecioPorKilo(ModelProducto producto) {
+		if(producto.valor.descripcion.importe.valor > 200 && producto.valor.descripcion.cantidad.unidad == "kilo")
+			error("El producto no puede valer mas de 200 pesos el kilo", 
+				producto, 
+				producto.eClass.getEStructuralFeature(
+					TextVerdulerPackage.VALOR_DEL_PRODUCTO__DESCRIPCION
+				)
+			)
+		
 	}
 }
