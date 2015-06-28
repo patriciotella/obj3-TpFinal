@@ -11,8 +11,6 @@ import textVerduler.textVerduler.TextVerdulerPackage
 import textVerduler.textVerduler.ModelProducto
 import textVerduler.textVerduler.Venta
 
-//import org.eclipse.xtext.validation.Check
-
 /**
  * This class contains custom validation rules. 
  *
@@ -75,4 +73,23 @@ class TextVerdulerValidator extends AbstractTextVerdulerValidator {
 			)
 		}
 	}
+	
+	/*@Check
+	def checkCantidadDeProductoPorCompra(Verduleria verduleria) {
+		verduleria.ventas.forEach [ venta |
+			venta.listaDeProductos.forEach [ producto |
+				val productoOriginal = verduleria.anotaciones.filter(ModelProducto).map[productos].findFirst[it.equals(producto)]
+				if(productoOriginal.valor.descripcion.cantidad.unidad == "gramos" && (producto.descripcion.cantidad > 4 && producto.descripcion.unidad == "kilos"))
+					error("El maximo de este producto por compra es de 4 kg.", 
+						venta, 
+						venta.eClass.getEStructuralFeature(TextVerdulerPackage.VENTA__TOTAL)
+					)
+				if(producto.descripcion.cantidad > 20 && producto.descripcion.unidad == "kilos")
+					error("El maximo de este producto por compra es de 4 kg.", 
+						venta, 
+						venta.eClass.getEStructuralFeature(TextVerdulerPackage.MERCADERIA__PRODUCTO)
+					)
+			] 
+		]
+	} */
 }

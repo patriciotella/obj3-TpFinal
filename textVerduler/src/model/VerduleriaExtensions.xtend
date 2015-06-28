@@ -43,7 +43,7 @@ class VerduleriaExtensions {
 	def static getProductosVendidos(Iterable<Venta> ventas){
 		var ArrayList<String> vendidos
 		for( venta : ventas){
-			vendidos.add(venta.listaDeCompras.producto.name)
+			vendidos.addAll(venta.listaDeProductos.map[it.producto.name])
 		}
 		return vendidos
 	}

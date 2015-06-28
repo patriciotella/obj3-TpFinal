@@ -14,6 +14,10 @@ ModelProducto:
 	(productos+=Producto valor=ValorDelProducto '.')
 ;
 
+Producto:
+	("Las" | "Los")
+	name=ID
+;
 ModelTarea:
 	(tareas+=Tarea ',' horaDeInicio=HoraDeInicio ',' duracion=Duracion '.' )	
 ;
@@ -44,7 +48,7 @@ Balance:
 
 Venta:
 	cliente=[Cliente] 'compro'
-	(listaDeCompras=Mercaderia ','?)*
+	(listaDeProductos+=Mercaderia ','?)* 
 	'se redondea a'? importe=Importe ','
 	total=TotalDeCompra '.'
 ;
@@ -56,11 +60,6 @@ TotalDeCompra:
 Mercaderia:
 	descripcion=Cantidad
 	'de' producto=[Producto]
-;
-
-Producto:
-	("Las" | "Los")
-	name=ID
 ;
 
 ValorDelProducto:
