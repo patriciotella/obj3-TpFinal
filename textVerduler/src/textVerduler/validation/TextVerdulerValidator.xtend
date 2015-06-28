@@ -3,6 +3,12 @@
  */
 package textVerduler.validation
 
+import org.eclipse.xtext.validation.Check
+import textVerduler.textVerduler.Verduleria
+import static extension model.VerduleriaExtensions.*
+import java.util.List
+import textVerduler.textVerduler.TextVerdulerPackage
+
 //import org.eclipse.xtext.validation.Check
 
 /**
@@ -12,14 +18,37 @@ package textVerduler.validation
  */
 class TextVerdulerValidator extends AbstractTextVerdulerValidator {
 
-//  public static val INVALID_NAME = 'invalidName'
-//
-//	@Check
-//	def checkGreetingStartsWithCapital(Greeting greeting) {
-//		if (!Character.isUpperCase(greeting.name.charAt(0))) {
-//			warning('Name should start with a capital', 
-//					MyDslPackage.Literals.GREETING__NAME,
-//					INVALID_NAME)
-//		}
-//	}
+	@Check
+	def checkClienteNoExiste(Verduleria verduleria) {
+		val List<String> nombres = newArrayList()
+		verduleria.clientes.forEach [ cliente | 
+			if (nombres.contains(cliente.name))
+				// error
+				error("El cliente ya existe", 
+					cliente, 
+					cliente.eClass.getEStructuralFeature(
+						TextVerdulerPackage.CLIENTE__NAME
+					)
+				)
+			else
+				nombres.add(cliente.name)
+		]
+	}
+	
+	@Check
+	def checkProductoNoExiste(Verduleria verduleria) {
+		val List<String> nombres = newArrayList()
+		verduleria.productos.forEach [ producto | 
+			if (nombres.contains(producto.name))
+				// error
+				error("El producto ya existe", 
+					producto, 
+					producto.eClass.getEStructuralFeature(
+						TextVerdulerPackage.PRODUCTO__NAME
+					)
+				)
+			else
+				nombres.add(producto.name)
+		]
+	}
 }

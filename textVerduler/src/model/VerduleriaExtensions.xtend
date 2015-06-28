@@ -29,26 +29,15 @@ class VerduleriaExtensions {
 	}
 	
 	def static getClientes(Verduleria unaVerdu){
-		var clientes=unaVerdu.anotaciones.filter(ModelCliente).map[clientes].flatten
-		var ArrayList<String> nombres= new ArrayList
-		for(cliente : clientes){
-			nombres.add(cliente.name)
-		}
-		return nombres
+		unaVerdu.anotaciones.filter(ModelCliente).map[clientes].flatten
 	}
 	
 	def static getVentas(Verduleria unaVerdu){
-		var ventas= unaVerdu.anotaciones.filter(Venta)
-		return ventas
+		unaVerdu.anotaciones.filter(Venta)
 	}
 	
 	def static getProductos(Verduleria unaVerdu){
-		var productos=unaVerdu.anotaciones.filter(ModelProducto).map[productos].flatten
-		var ArrayList<String> nombres= new ArrayList
-		for(producto : productos){
-			nombres.add(producto.name)
-		}
-		return nombres
+		unaVerdu.anotaciones.filter(ModelProducto).map[productos].flatten
 	}
 	
 	def static getProductosVendidos(Iterable<Venta> ventas){

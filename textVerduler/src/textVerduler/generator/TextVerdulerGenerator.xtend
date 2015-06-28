@@ -11,6 +11,7 @@ import textVerduler.textVerduler.Verduleria
 
 import static extension model.VentaExtensions.*
 import static extension model.VerduleriaExtensions.*
+import textVerduler.textVerduler.Cliente
 
 /**
  * Generates code from your model files on save.
@@ -48,16 +49,16 @@ class TextVerdulerGenerator implements IGenerator {
 			Tienen credito: 
 			«FOR cliente : clientes»
 			« IF(ventas.balanceCliente(cliente)>0) »
-			« cliente» « ventas.balanceCliente(cliente) » pesos 
+			« cliente.name » « ventas.balanceCliente(cliente) » pesos 
 			« ENDIF »
 			«ENDFOR»
 			
 			Al dia: 
 			«FOR cliente : clientes»
-			« IF(!ventas.forall[venta | venta.unCliente.name != cliente]) »
+			« IF(!ventas.forall[venta | venta.unCliente.name != cliente.name]) »
 «««			hay que generalizarlo, lo puse para que no aparezca el que no compro
 			« IF(ventas.balanceCliente(cliente)== 0) »
-			« cliente» 
+			« cliente.name » 
 			« ENDIF »
 			« ENDIF »
 			«ENDFOR»
@@ -65,7 +66,7 @@ class TextVerdulerGenerator implements IGenerator {
 			No hicieron compras:
 			«FOR cliente : clientes»
 			« IF(ventas.forall[venta | venta.unCliente.name != cliente]) »
-			« cliente» 
+			« cliente.name » 
 			« ENDIF »
 			«ENDFOR»
 			
@@ -81,10 +82,10 @@ class TextVerdulerGenerator implements IGenerator {
 		)
 	}
 
-	def int balanceCliente(Iterable<Venta> ventas, String cliente) {
+	def int balanceCliente(Iterable<Venta> ventas, Cliente cliente) {
 		var resultado = 0;
 		for (venta : ventas) {
-			if (venta.unCliente.name == cliente) {
+			if (venta.unCliente.name == cliente.name) {
 				resultado = resultado + venta.estadoDeCompra
 			}
 		}
