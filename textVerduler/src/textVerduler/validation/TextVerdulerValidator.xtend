@@ -8,8 +8,8 @@ import textVerduler.textVerduler.Verduleria
 import static extension model.VerduleriaExtensions.*
 import java.util.List
 import textVerduler.textVerduler.TextVerdulerPackage
-import textVerduler.textVerduler.Producto
 import textVerduler.textVerduler.ModelProducto
+import textVerduler.textVerduler.Venta
 
 //import org.eclipse.xtext.validation.Check
 
@@ -25,7 +25,7 @@ class TextVerdulerValidator extends AbstractTextVerdulerValidator {
 		val List<String> nombres = newArrayList()
 		verduleria.clientes.forEach [ cliente | 
 			if (nombres.contains(cliente.name))
-				error("El cliente ya existe", 
+				error("El cliente ya existe.", 
 					cliente, 
 					cliente.eClass.getEStructuralFeature(
 						TextVerdulerPackage.CLIENTE__NAME
@@ -41,7 +41,7 @@ class TextVerdulerValidator extends AbstractTextVerdulerValidator {
 		val List<String> nombres = newArrayList()
 		verduleria.productos.forEach [ producto | 
 			if (nombres.contains(producto.name))
-				error("El producto ya existe", 
+				error("El producto ya existe.", 
 					producto, 
 					producto.eClass.getEStructuralFeature(
 						TextVerdulerPackage.PRODUCTO__NAME
@@ -55,12 +55,24 @@ class TextVerdulerValidator extends AbstractTextVerdulerValidator {
 	@Check
 	def checkPrecioPorKilo(ModelProducto producto) {
 		if(producto.valor.descripcion.importe.valor > 200 && producto.valor.descripcion.cantidad.unidad == "kilo")
-			error("El producto no puede valer mas de 200 pesos el kilo", 
+			error("El producto no puede valer mas de 200 pesos el kilo.", 
 				producto, 
 				producto.eClass.getEStructuralFeature(
 					TextVerdulerPackage.VALOR_DEL_PRODUCTO__DESCRIPCION
 				)
 			)
 		
+	}
+	
+	@Check
+	def checkPagoDelCliente(Venta venta) {
+		if (venta.total.estado == "queda debiendo" && venta.total.importe.valor > 3) {
+			error("No se le pueden fiar mas de 3 pesos al cliente.", 
+				venta, 
+				venta.eClass.getEStructuralFeature(
+					TextVerdulerPackage.VENTA__TOTAL
+				)
+			)
+		}
 	}
 }

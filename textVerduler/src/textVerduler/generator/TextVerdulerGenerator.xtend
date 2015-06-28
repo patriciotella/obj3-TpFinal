@@ -42,7 +42,7 @@ class TextVerdulerGenerator implements IGenerator {
 			Deben: 
 			«FOR cliente : clientes»
 			« IF(ventas.balanceCliente(cliente)<0) »
-			« cliente» « - ventas.balanceCliente(cliente) » pesos 
+			« cliente.name » « - ventas.balanceCliente(cliente) » pesos 
 			« ENDIF »
 			«ENDFOR»
 			
