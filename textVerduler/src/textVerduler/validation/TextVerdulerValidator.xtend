@@ -8,8 +8,8 @@ import textVerduler.textVerduler.Verduleria
 import static extension model.VerduleriaExtensions.*
 import java.util.List
 import textVerduler.textVerduler.TextVerdulerPackage
-import textVerduler.textVerduler.ModelProducto
 import textVerduler.textVerduler.Venta
+import textVerduler.textVerduler.ProductoConPrecio
 
 /**
  * This class contains custom validation rules. 
@@ -51,7 +51,7 @@ class TextVerdulerValidator extends AbstractTextVerdulerValidator {
 	}
 	
 	@Check
-	def checkPrecioPorKilo(ModelProducto producto) {
+	def checkPrecioPorKilo(ProductoConPrecio producto) {
 		if(producto.valor.descripcion.importe.valor > 200 && producto.valor.descripcion.cantidad.unidad == "kilo")
 			error("El producto no puede valer mas de 200 pesos el kilo.", 
 				producto, 
@@ -74,22 +74,23 @@ class TextVerdulerValidator extends AbstractTextVerdulerValidator {
 		}
 	}
 	
-	/*@Check
+	@Check
 	def checkCantidadDeProductoPorCompra(Verduleria verduleria) {
 		verduleria.ventas.forEach [ venta |
-			venta.listaDeProductos.forEach [ producto |
-				val productoOriginal = verduleria.anotaciones.filter(ModelProducto).map[productos].findFirst[it.equals(producto)]
-				if(productoOriginal.valor.descripcion.cantidad.unidad == "gramos" && (producto.descripcion.cantidad > 4 && producto.descripcion.unidad == "kilos"))
+			venta.listaDeProductos.forEach [ mercaderia |
+				val productoOriginal = verduleria.productosConPrecio.findFirst[it.producto.name == mercaderia.producto.name]
+				if(productoOriginal.valor.descripcion.cantidad.unidad == "gramos" && (mercaderia.descripcion.cantidad > 4 && mercaderia.descripcion.unidad == "kilos"))
 					error("El maximo de este producto por compra es de 4 kg.", 
-						venta, 
-						venta.eClass.getEStructuralFeature(TextVerdulerPackage.VENTA__TOTAL)
+						mercaderia, 
+						mercaderia.eClass.getEStructuralFeature(TextVerdulerPackage.MERCADERIA__DESCRIPCION)
 					)
-				if(producto.descripcion.cantidad > 20 && producto.descripcion.unidad == "kilos")
-					error("El maximo de este producto por compra es de 4 kg.", 
-						venta, 
-						venta.eClass.getEStructuralFeature(TextVerdulerPackage.MERCADERIA__PRODUCTO)
-					)
+				else
+					if(mercaderia.descripcion.cantidad > 20 && mercaderia.descripcion.unidad == "kilos")
+						error("El maximo de este producto por compra es de 20 kg.", 
+							mercaderia, 
+							mercaderia.eClass.getEStructuralFeature(TextVerdulerPackage.MERCADERIA__DESCRIPCION)
+						)
 			] 
 		]
-	} */
+	}
 }

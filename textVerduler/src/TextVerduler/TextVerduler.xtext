@@ -3,23 +3,27 @@ grammar textVerduler.TextVerduler with org.eclipse.xtext.common.Terminals
 generate textVerduler "http://www.TextVerduler"
 
 Verduleria:
-	anotaciones+= (ModelCliente| ModelProducto| Venta| ModelTarea)*
+	(estadosDeClientes += EstadoDeCliente*) +
+	(productosConPrecio += ProductoConPrecio*) +
+	(ventas += Venta*) +
+	tareas += ModelTarea*
 ;
 
-ModelCliente:
-	(clientes+=Cliente ',' estadoDeDeuda=EstadoDeuda '.')
+EstadoDeCliente:
+	cliente = Cliente ',' estadoDeDeuda=EstadoDeuda '.'
 ;
 
-ModelProducto:
-	(productos+=Producto valor=ValorDelProducto '.')
+ProductoConPrecio:
+	producto = Producto valor=ValorDelProducto '.'
 ;
 
 Producto:
 	("Las" | "Los")
 	name=ID
 ;
+
 ModelTarea:
-	(tareas+=Tarea ',' horaDeInicio=HoraDeInicio ',' duracion=Duracion '.' )	
+	tarea = Tarea ',' horaDeInicio=HoraDeInicio ',' duracion=Duracion '.'	
 ;
 
 Duracion:

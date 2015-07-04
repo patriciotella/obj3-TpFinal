@@ -1,17 +1,14 @@
 package model
 
-import java.util.ArrayList
-import textVerduler.textVerduler.ModelCliente
-import textVerduler.textVerduler.Venta
 import textVerduler.textVerduler.Verduleria
 
 import static extension model.VentaExtensions.*
-import textVerduler.textVerduler.ModelProducto
+import textVerduler.textVerduler.Producto
 
 class VerduleriaExtensions {
 	
-	def static totalDeVentas(Verduleria unaVerdu){
-		var valores=unaVerdu.anotaciones.filter(Venta).map[importe.valor]
+	def static totalDeVentas(Verduleria unaVerduleria){
+		var valores=unaVerduleria.ventas.map[importe.valor]
 		var resultado= 0
 		for(valor: valores){
 			resultado+=valor
@@ -19,8 +16,8 @@ class VerduleriaExtensions {
 		resultado
 	}
 	
-	def static gananciasTotales(Verduleria unaVerdu){
-		var ganancias= unaVerdu.anotaciones.filter(Venta).map[ganancias]
+	def static gananciasTotales(Verduleria unaVerduleria){
+		var ganancias= unaVerduleria.ventas.map[ganancias]
 		var resultado= 0
 		for (ganancia: ganancias){
 			resultado+= ganancia
@@ -28,23 +25,43 @@ class VerduleriaExtensions {
 		resultado
 	}
 	
-	def static getClientes(Verduleria unaVerdu){
-		unaVerdu.anotaciones.filter(ModelCliente).map[clientes].flatten
+	def static getClientes(Verduleria unaVerduleria){
+		unaVerduleria.estadosDeClientes.map[cliente]
 	}
 	
-	def static getVentas(Verduleria unaVerdu){
-		unaVerdu.anotaciones.filter(Venta)
+	def static getProductos(Verduleria unaVerduleria){
+		unaVerduleria.productosConPrecio.map[producto]
 	}
 	
-	def static getProductos(Verduleria unaVerdu){
-		unaVerdu.anotaciones.filter(ModelProducto).map[productos].flatten
+	def static getProductosVendidos(Verduleria unaVerduleria){
+		unaVerduleria.ventas.map[listaDeProductos].flatten.map[producto].toSet
 	}
 	
-	def static getProductosVendidos(Iterable<Venta> ventas){
-		var ArrayList<String> vendidos
-		for( venta : ventas){
-			vendidos.addAll(venta.listaDeProductos.map[it.producto.name])
+	def static getProductosSinVender(Verduleria unaVenduleria) {
+		var resultado = newArrayList
+		val productosVendidos = unaVenduleria.ventas.map[listaDeProductos].flatten.map[producto]
+		for(producto : unaVenduleria.productos){
+			if(!productosVendidos.exists[name == producto.name])
+				resultado.add(producto)
 		}
-		return vendidos
+		resultado
+	}
+	
+	def static totalVendidoDe(Verduleria unaVerduleria, Producto unProducto) {
+		val compras = unaVerduleria.ventas.map[listaDeProductos].flatten.filter[producto.name == unProducto.name]
+		var resultado = 0f
+		for(compra : compras){
+			val unidad = compra.descripcion.unidad
+			val cantidad = compra.descripcion.cantidad
+			if(unidad == "kilos" || unidad == "kilo")
+				resultado += cantidad
+			if(unidad == "gramos")
+				resultado += (cantidad / 1000.00f)
+			if(unidad == "medio kilo")
+				resultado += 0.50f
+			if(unidad == "cuarto kilo")
+				resultado += 0.25f
+		}
+		resultado
 	}
 }

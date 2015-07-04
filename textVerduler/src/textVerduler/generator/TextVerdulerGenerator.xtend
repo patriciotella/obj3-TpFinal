@@ -21,63 +21,60 @@ import textVerduler.textVerduler.Cliente
 class TextVerdulerGenerator implements IGenerator {
 
 	override void doGenerate(Resource resource, IFileSystemAccess fsa) {
-		val verdu = resource.allContents.filter(Verduleria).head
-		val total = verdu.totalDeVentas
-		val totalEnCaja = verdu.gananciasTotales
-		val clientes = verdu.clientes
-		val ventas = verdu.ventas
-//		val productos= verdu.productos
-//		val productosVendidos=ventas.productosVendidos
+		val verduleria = resource.allContents.filter(Verduleria).head
+		val total = verduleria.totalDeVentas
+		val totalEnCaja = verduleria.gananciasTotales
+		val clientes = verduleria.clientes
+		val ventas = verduleria.ventas
+		val productosVendidos = verduleria.productosVendidos
+		val productosSinVender = verduleria.productosSinVender
 
 		fsa.generateFile(
 			'verduleria.txt',
-			'''Totales:
+			'''
+			Totales:
 			
-			Se vendio por un total de «total» pesos.
+				Se vendio por un total de «total» pesos.
 			
-			Se recaudaron en total «totalEnCaja» pesos.
+				Se recaudaron en total «totalEnCaja» pesos.
 			
 			Clientes:
 			
-			Deben: 
-			«FOR cliente : clientes»
-			« IF(ventas.balanceCliente(cliente)<0) »
-			« cliente.name » « - ventas.balanceCliente(cliente) » pesos 
-			« ENDIF »
-			«ENDFOR»
+				Deben: 
+					«FOR cliente : clientes»
+						« IF(ventas.balanceCliente(cliente) < 0) »
+							« cliente.name » « - ventas.balanceCliente(cliente) » pesos 
+						« ENDIF »
+					«ENDFOR»
 			
-			Tienen credito: 
-			«FOR cliente : clientes»
-			« IF(ventas.balanceCliente(cliente)>0) »
-			« cliente.name » « ventas.balanceCliente(cliente) » pesos 
-			« ENDIF »
-			«ENDFOR»
+				Tienen credito: 
+					«FOR cliente : clientes»
+						« IF(ventas.balanceCliente(cliente) > 0) »
+							« cliente.name » « ventas.balanceCliente(cliente) » pesos 
+						« ENDIF »
+					«ENDFOR»
 			
-			Al dia: 
-			«FOR cliente : clientes»
-			« IF(!ventas.forall[venta | venta.cliente.name != cliente.name]) »
-«««			hay que generalizarlo, lo puse para que no aparezca el que no compro
-			« IF(ventas.balanceCliente(cliente)== 0) »
-			« cliente.name » 
-			« ENDIF »
-			« ENDIF »
-			«ENDFOR»
+				Al dia: 
+					«FOR cliente : clientes»	
+						« IF(ventas.balanceCliente(cliente)== 0) »
+							« cliente.name » 
+						« ENDIF »
+					«ENDFOR»
 			
-			No hicieron compras:
-			«FOR cliente : clientes»
-			« IF(ventas.forall[venta | venta.cliente.name != cliente]) »
-			« cliente.name » 
-			« ENDIF »
-			«ENDFOR»
+				No hicieron compras:
+					«FOR cliente : clientes»
+						« IF(ventas.forall[venta | venta.cliente.name != cliente]) »
+							« cliente.name » 
+						« ENDIF »
+					«ENDFOR»
 			
 			Productos:
+				«FOR producto : productosVendidos»
+					« producto.name », total vendido « verduleria.totalVendidoDe(producto) » kilos
+				«ENDFOR»
 			
-			No se vendieron:
-«««			«FOR producto : productos»
-«««			« IF(productosVendidos.forall[vendido | vendido!= producto]) »
-«««			« producto» 
-«««			« ENDIF »
-«««			«ENDFOR»
+				No se vendieron:
+					« String.join(", ", productosSinVender.map[name]) »
 			'''
 		)
 	}
