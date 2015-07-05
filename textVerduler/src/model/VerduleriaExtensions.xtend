@@ -4,6 +4,7 @@ import textVerduler.textVerduler.Verduleria
 
 import static extension model.VentaExtensions.*
 import textVerduler.textVerduler.Producto
+import textVerduler.textVerduler.Cliente
 
 class VerduleriaExtensions {
 	
@@ -64,4 +65,34 @@ class VerduleriaExtensions {
 		}
 		resultado
 	}
+
+	def static balanceCliente(Verduleria verduleria, Cliente cliente) {
+		var resultado = 0;
+		for (venta : verduleria.ventas) {
+			if (venta.cliente.name == cliente.name) {
+				resultado = resultado + venta.estadoDeCompra
+			}
+		}
+		return resultado
+	}
+	
+	def static deudores(Verduleria unaVerduleria) {
+		unaVerduleria.clientes.filter[unaVerduleria.balanceCliente(it) < 0]
+	}
+	
+	def static clientesAlDia(Verduleria unaVerduleria) {
+		unaVerduleria.clientes.filter[unaVerduleria.balanceCliente(it) == 0]
+	}
+	
+	def static clientesConDineroAFavor(Verduleria unaVerduleria) {
+		unaVerduleria.clientes.filter[unaVerduleria.balanceCliente(it) > 0]
+	}
+
+	def static clientesQueNoCompraron(Verduleria unaVerduleria) {
+		unaVerduleria.clientes.filter[unaVerduleria.noCompro(it)]
+	}
+	
+	def static noCompro(Verduleria unaVerduleria, Cliente unCliente) {
+		unaVerduleria.ventas.forall[it.cliente != unCliente]
+	}	
 }

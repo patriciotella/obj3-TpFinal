@@ -6,7 +6,7 @@ Verduleria:
 	(estadosDeClientes += EstadoDeCliente*) +
 	(productosConPrecio += ProductoConPrecio*) +
 	(ventas += Venta*) +
-	tareas += ModelTarea*
+	tareasRealizadas += RegistroDeTarea*
 ;
 
 EstadoDeCliente:
@@ -22,7 +22,7 @@ Producto:
 	name=ID
 ;
 
-ModelTarea:
+RegistroDeTarea:
 	tarea = Tarea ',' horaDeInicio=HoraDeInicio ',' duracion=Duracion '.'	
 ;
 
@@ -33,12 +33,9 @@ Duracion:
 ;
 
 HoraDeInicio:
-	'hora de inicio' unahora=Hora
-;
-
-Hora:
+	'hora de inicio'
 	hora=INT
-	("en punto"|"y cuarto"|"y veinte"|"y media"|"menos veinte"|"menos cuarto")
+	minutos=("en punto"|"y cuarto"|"y veinte"|"y media"|"menos veinte"|"menos cuarto")
 ;
 
 Tarea:
@@ -81,7 +78,7 @@ Cantidad:
 ;
 
 Articulo:
-	articulo=("el"|"los")
+	valor=("el"|"los")
 ;
 
 Cliente:

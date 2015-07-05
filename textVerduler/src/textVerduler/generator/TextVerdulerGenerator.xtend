@@ -41,31 +41,23 @@ class TextVerdulerGenerator implements IGenerator {
 			Clientes:
 			
 				Deben: 
-					«FOR cliente : clientes»
-						« IF(ventas.balanceCliente(cliente) < 0) »
-							« cliente.name » « - ventas.balanceCliente(cliente) » pesos 
-						« ENDIF »
+					«FOR cliente : verduleria.deudores»
+						« cliente.name » « - verduleria.balanceCliente(cliente) » pesos
 					«ENDFOR»
 			
 				Tienen credito: 
-					«FOR cliente : clientes»
-						« IF(ventas.balanceCliente(cliente) > 0) »
-							« cliente.name » « ventas.balanceCliente(cliente) » pesos 
-						« ENDIF »
+					«FOR cliente : verduleria.clientesConDineroAFavor»
+						« cliente.name » « verduleria.balanceCliente(cliente) » pesos
 					«ENDFOR»
 			
 				Al dia: 
-					«FOR cliente : clientes»	
-						« IF(ventas.balanceCliente(cliente)== 0) »
-							« cliente.name » 
-						« ENDIF »
+					«FOR cliente : verduleria.clientesAlDia»
+						« cliente.name »
 					«ENDFOR»
 			
 				No hicieron compras:
-					«FOR cliente : clientes»
-						« IF(ventas.forall[venta | venta.cliente.name != cliente]) »
-							« cliente.name » 
-						« ENDIF »
+					«FOR cliente : verduleria.clientesQueNoCompraron»
+						« cliente.name »
 					«ENDFOR»
 			
 			Productos:
@@ -77,15 +69,5 @@ class TextVerdulerGenerator implements IGenerator {
 					« String.join(", ", productosSinVender.map[name]) »
 			'''
 		)
-	}
-
-	def int balanceCliente(Iterable<Venta> ventas, Cliente cliente) {
-		var resultado = 0;
-		for (venta : ventas) {
-			if (venta.cliente.name == cliente.name) {
-				resultado = resultado + venta.estadoDeCompra
-			}
-		}
-		return resultado
 	}
 }

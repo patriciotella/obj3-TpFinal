@@ -4,6 +4,20 @@
 package textVerduler.ui.labeling
 
 import com.google.inject.Inject
+import textVerduler.textVerduler.EstadoDeCliente
+import textVerduler.textVerduler.ProductoConPrecio
+import textVerduler.textVerduler.Venta
+import textVerduler.textVerduler.RegistroDeTarea
+import textVerduler.textVerduler.EstadoDeuda
+import textVerduler.textVerduler.ValorDelProducto
+import textVerduler.textVerduler.HoraDeInicio
+import textVerduler.textVerduler.Duracion
+import textVerduler.textVerduler.Balance
+import textVerduler.textVerduler.PrecioPorCantidad
+import textVerduler.textVerduler.Articulo
+import textVerduler.textVerduler.Importe
+import textVerduler.textVerduler.TotalDeCompra
+import textVerduler.textVerduler.Mercaderia
 
 /**
  * Provides labels for EObjects.
@@ -19,9 +33,61 @@ class TextVerdulerLabelProvider extends org.eclipse.xtext.ui.label.DefaultEObjec
 
 	// Labels and icons can be computed like this:
 	
-//	def text(Greeting ele) {
-//		'A greeting to ' + ele.name
-//	}
+	def text(EstadoDeCliente estado) {
+		'Estado de cuenta de ' + estado.cliente.name
+	}
+	
+	def text(ProductoConPrecio productoYPrecio) {
+		'Precio de ' + productoYPrecio.producto.name
+	}
+	
+	def text(Venta venta) {
+		'Compra de ' + venta.cliente.name
+	}
+	
+	def text(RegistroDeTarea registro) {
+		'Registro de tarea'
+	}
+	
+	def text(EstadoDeuda estado) {
+		'Estado de cuenta'
+	}
+	
+	def text(ValorDelProducto valor) {
+		'Valor de producto'
+	}
+	
+	def text(HoraDeInicio horaDeInicio) {
+		'Hora de inicio: ' + horaDeInicio.hora + ' ' + horaDeInicio.minutos
+	}
+	
+	def text(Duracion duracion) {
+		'Dura ' + duracion.hora + ' horas'
+	}
+	
+	def text(Balance balance) {
+		'Entrada ' + balance.importeEntrada ', Salida ' + balance.importeSalida
+	}
+	
+	def text(PrecioPorCantidad precioPorCantidad) {
+		'Salen ' + precioPorCantidad.importe.valor + ' pesos por cantidad'
+	}
+	
+	def text(Articulo articulo) {
+		articulo.valor
+	}
+	
+	def text(Importe importe) {
+		importe.valor + ' ' + importe.moneda
+	}
+	
+	def text(TotalDeCompra total) {
+		text(total.estado) + ' ' text(total.importe)
+	}
+	
+	def text(Mercaderia mercaderia) {
+		text(mercaderia.descripcion) + ' de ' + text(mercaderia.producto)
+	}
 //
 //	def image(Greeting ele) {
 //		'Greeting.gif'
