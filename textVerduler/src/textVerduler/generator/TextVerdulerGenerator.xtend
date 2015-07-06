@@ -6,11 +6,8 @@ package textVerduler.generator
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.generator.IFileSystemAccess
 import org.eclipse.xtext.generator.IGenerator
-import textVerduler.textVerduler.Cliente
-import textVerduler.textVerduler.Venta
 import textVerduler.textVerduler.Verduleria
 
-import static extension model.VentaExtensions.*
 import static extension model.VerduleriaExtensions.*
 
 /**
@@ -24,8 +21,6 @@ class TextVerdulerGenerator implements IGenerator {
 		val verduleria = resource.allContents.filter(Verduleria).head
 		val total = verduleria.totalDeVentas
 		val totalEnCaja = verduleria.gananciasTotales
-		val clientes = verduleria.clientes
-		val ventas = verduleria.ventas
 		val productosVendidos = verduleria.productosVendidos
 		val productosSinVender = verduleria.productosSinVender
 
@@ -66,10 +61,8 @@ class TextVerdulerGenerator implements IGenerator {
 					«ENDFOR»
 				
 					No se vendieron:
-				«««					« String.join(", ", productosSinVender.map[name]) »
-					«FOR producto : productosSinVender.map[name]»
-					« producto»
-						«ENDFOR»
+«««									« String.join(", ", productosSinVender.map[name]) »
+						«productosSinVender.map[name]»
 «««				«IF (!verduleria.hayConsultas.preguntas.isEmpty)»
 «««					«archivoDeConsultas(fsa, verduleria)»
 «««				«ENDIF»

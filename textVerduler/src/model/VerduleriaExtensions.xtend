@@ -9,21 +9,17 @@ import textVerduler.textVerduler.Cliente
 class VerduleriaExtensions {
 	
 	def static totalDeVentas(Verduleria unaVerduleria){
-		var valores=unaVerduleria.ventas.map[importe.valor]
-		var resultado= 0
-		for(valor: valores){
-			resultado+=valor
-		}
-		resultado
+		unaVerduleria.ventas.map[importe.valor]
+			.fold(0) [result, valor |
+				result + valor
+			]
 	}
 	
 	def static gananciasTotales(Verduleria unaVerduleria){
-		var ganancias= unaVerduleria.ventas.map[ganancias]
-		var resultado= 0
-		for (ganancia: ganancias){
-			resultado+= ganancia
-		}
-		resultado
+		unaVerduleria.ventas.map[ganancias]
+			.fold(0) [result, ganancia |
+				result + ganancia
+			]
 	}
 	
 	def static getClientes(Verduleria unaVerduleria){
@@ -38,14 +34,11 @@ class VerduleriaExtensions {
 		unaVerduleria.ventas.map[listaDeProductos].flatten.map[producto].toSet
 	}
 	
-	def static getProductosSinVender(Verduleria unaVenduleria) {
-		var resultado = newArrayList
-		val productosVendidos = unaVenduleria.ventas.map[listaDeProductos].flatten.map[producto]
-		for(producto : unaVenduleria.productos){
-			if(!productosVendidos.exists[name == producto.name])
-				resultado.add(producto)
-		}
-		resultado
+	def static getProductosSinVender(Verduleria unaVerduleria) {
+		val productosVendidos = unaVerduleria.ventas.map[listaDeProductos].flatten.map[producto]
+		unaVerduleria.productos.filter[producto |
+			!productosVendidos.exists[equals(producto)]
+		]
 	}
 	
 	def static totalVendidoDe(Verduleria unaVerduleria, Producto unProducto) {
@@ -67,13 +60,11 @@ class VerduleriaExtensions {
 	}
 
 	def static balanceCliente(Verduleria verduleria, Cliente cliente) {
-		var resultado = 0;
-		for (venta : verduleria.ventas) {
-			if (venta.cliente.name == cliente.name) {
-				resultado = resultado + venta.estadoDeCompra
-			}
-		}
-		return resultado
+		verduleria.ventas
+			.filter[it.cliente == cliente]
+			.fold(0) [result, venta |
+				result + venta.estadoDeCompra
+			]
 	}
 	
 	def static deudores(Verduleria unaVerduleria) {
