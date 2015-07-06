@@ -94,5 +94,8 @@ class VerduleriaExtensions {
 	
 	def static noCompro(Verduleria unaVerduleria, Cliente unCliente) {
 		unaVerduleria.ventas.forall[it.cliente != unCliente]
+	}
+	def static hayConsultas(Verduleria unaVerduleria){
+		unaVerduleria.consultas
 	}	
 }

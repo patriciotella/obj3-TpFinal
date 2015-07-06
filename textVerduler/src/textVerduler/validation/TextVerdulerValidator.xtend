@@ -13,7 +13,7 @@ import textVerduler.textVerduler.ProductoConPrecio
 
 /**
  * This class contains custom validation rules. 
- *
+ * 
  * See https://www.eclipse.org/Xtext/documentation/303_runtime_concepts.html#validation
  */
 class TextVerdulerValidator extends AbstractTextVerdulerValidator {
@@ -21,10 +21,11 @@ class TextVerdulerValidator extends AbstractTextVerdulerValidator {
 	@Check
 	def checkClienteNoExiste(Verduleria verduleria) {
 		val List<String> nombres = newArrayList()
-		verduleria.clientes.forEach [ cliente | 
+		verduleria.clientes.forEach [ cliente |
 			if (nombres.contains(cliente.name))
-				error("El cliente ya existe.", 
-					cliente, 
+				error(
+					"El cliente ya existe.",
+					cliente,
 					cliente.eClass.getEStructuralFeature(
 						TextVerdulerPackage.CLIENTE__NAME
 					)
@@ -33,14 +34,39 @@ class TextVerdulerValidator extends AbstractTextVerdulerValidator {
 				nombres.add(cliente.name)
 		]
 	}
-	
+
+//	@Check
+//	def checkProductoNoExiste(Verduleria verduleria) {
+//		val List<String> nombres = newArrayList()
+//		verduleria.productos.forEach [ producto |
+//			if (nombres.contains(producto.name))
+//				error(
+//					"El producto ya existe.",
+//					producto,
+//					producto.eClass.getEStructuralFeature(
+//						TextVerdulerPackage.PRODUCTO__NAME
+//					)
+//				)
+//			else
+//				nombres.add(producto.name)
+//		]
+//	}
 	@Check
-	def checkProductoNoExiste(Verduleria verduleria) {
+	def checkProductoPluralOSingular(Verduleria verduleria) {
 		val List<String> nombres = newArrayList()
-		verduleria.productos.forEach [ producto | 
-			if (nombres.contains(producto.name))
-				error("El producto ya existe.", 
-					producto, 
+		verduleria.productos.forEach [ producto |
+			var String productoASingular
+			var String productoAPlural
+			productoASingular = producto.name
+			productoAPlural = producto.name.toPlural
+			if (productoAPlural == producto.name) {
+				productoASingular = producto.name.toSingular
+			}
+			if (nombres.contains(productoASingular) || nombres.contains(producto.name) ||
+				nombres.contains(productoAPlural))
+				error(
+					"El producto ya existe, plural o singular es lo mismo",
+					producto,
 					producto.eClass.getEStructuralFeature(
 						TextVerdulerPackage.PRODUCTO__NAME
 					)
@@ -49,48 +75,79 @@ class TextVerdulerValidator extends AbstractTextVerdulerValidator {
 				nombres.add(producto.name)
 		]
 	}
-	
+
+	def getToSingular(String unNombre) {
+		var singular = ""
+		if (unNombre.endsWith('s')) {
+			singular = unNombre.substring(0, unNombre.length - 1)
+		} else if (unNombre.endsWith('es')) {
+			singular = unNombre.substring(0, unNombre.length - 2)
+		}
+		singular
+	}
+
+	def toPlural(String unNombre) {
+		var plural = ""
+		if (unNombre.endsWith('s') || unNombre.endsWith('es')) {
+			plural = unNombre
+		} else {
+			if (unNombre.endsWith('a') || unNombre.endsWith('e') || unNombre.endsWith('i') || unNombre.endsWith('o') ||
+				unNombre.endsWith('u')) {
+				plural = unNombre.concat('s')
+			} else {
+				plural = unNombre.concat('es')
+			}
+		}
+		plural
+	}
+
 	@Check
 	def checkPrecioPorKilo(ProductoConPrecio producto) {
-		if(producto.valor.descripcion.importe.valor > 200 && producto.valor.descripcion.cantidad.unidad == "kilo")
-			error("El producto no puede valer mas de 200 pesos el kilo.", 
-				producto, 
+		if (producto.valor.descripcion.importe.valor > 200 && producto.valor.descripcion.cantidad.unidad == "kilo")
+			error(
+				"El producto no puede valer mas de 200 pesos el kilo.",
+				producto,
 				producto.eClass.getEStructuralFeature(
 					TextVerdulerPackage.VALOR_DEL_PRODUCTO__DESCRIPCION
 				)
 			)
-		
+
 	}
-	
+
 	@Check
 	def checkPagoDelCliente(Venta venta) {
 		if (venta.total.estado == "queda debiendo" && venta.total.importe.valor > 3) {
-			error("No se le pueden fiar mas de 3 pesos al cliente.", 
-				venta, 
+			error(
+				"No se le pueden fiar mas de 3 pesos al cliente.",
+				venta,
 				venta.eClass.getEStructuralFeature(
 					TextVerdulerPackage.VENTA__TOTAL
 				)
 			)
 		}
 	}
-	
+
 	@Check
 	def checkCantidadDeProductoPorCompra(Verduleria verduleria) {
 		verduleria.ventas.forEach [ venta |
 			venta.listaDeProductos.forEach [ mercaderia |
-				val productoOriginal = verduleria.productosConPrecio.findFirst[it.producto.name == mercaderia.producto.name]
-				if(productoOriginal.valor.descripcion.cantidad.unidad == "gramos" && (mercaderia.descripcion.cantidad > 4 && mercaderia.descripcion.unidad == "kilos"))
-					error("El maximo de este producto por compra es de 4 kg.", 
-						mercaderia, 
+				val productoOriginal = verduleria.productosConPrecio.findFirst [
+					it.producto.name == mercaderia.producto.name
+				]
+				if (productoOriginal.valor.descripcion.cantidad.unidad == "gramos" &&
+					(mercaderia.descripcion.cantidad > 4 && mercaderia.descripcion.unidad == "kilos"))
+					error(
+						"El maximo de este producto por compra es de 4 kg.",
+						mercaderia,
 						mercaderia.eClass.getEStructuralFeature(TextVerdulerPackage.MERCADERIA__DESCRIPCION)
 					)
-				else
-					if(mercaderia.descripcion.cantidad > 20 && mercaderia.descripcion.unidad == "kilos")
-						error("El maximo de este producto por compra es de 20 kg.", 
-							mercaderia, 
-							mercaderia.eClass.getEStructuralFeature(TextVerdulerPackage.MERCADERIA__DESCRIPCION)
-						)
-			] 
+				else if (mercaderia.descripcion.cantidad > 20 && mercaderia.descripcion.unidad == "kilos")
+					error(
+						"El maximo de este producto por compra es de 20 kg.",
+						mercaderia,
+						mercaderia.eClass.getEStructuralFeature(TextVerdulerPackage.MERCADERIA__DESCRIPCION)
+					)
+			]
 		]
 	}
 }

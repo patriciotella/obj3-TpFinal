@@ -6,7 +6,26 @@ Verduleria:
 	(estadosDeClientes += EstadoDeCliente*) +
 	(productosConPrecio += ProductoConPrecio*) +
 	(ventas += Venta*) +
-	tareasRealizadas += RegistroDeTarea*
+	(tareasRealizadas += RegistroDeTarea*) +
+	((consultas = Consulta) ?)
+;
+
+Consulta:
+	('Quiero Saber :' (preguntas+= Consultas*) 'Listo.')
+	
+;
+
+Consultas:
+	(descripcion='Cuanto gastó ' cliente=[Cliente] '.')
+//	'Cuanto gastaron' (name=ID*) 'y' name=ID ('en total'|'de a uno')|
+//	'Como fue el redondeo'|
+//	'Cuanto compro' name=ID 'de' name=ID |
+//	'Quienes compraron' name=ID |
+//	'Quien se llevo mas' name=ID |
+//	'Que se vendio mas que' name=ID 'en cantidad'|
+//	'Los' numeroDeClientes=INT 'clientes que gastaron mas'|
+//	'Cuanto se vendio de ' name=ID |
+//	'cuanto se vendio de ' (name=ID*) 'y' name=ID ('en total'|'de a uno'))
 ;
 
 EstadoDeCliente:
