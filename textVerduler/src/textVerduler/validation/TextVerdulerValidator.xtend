@@ -71,30 +71,6 @@ class TextVerdulerValidator extends AbstractTextVerdulerValidator {
 				nombres.add(producto.name)
 		]
 	}
-
-	def getToSingular(String unNombre) {
-		if (unNombre.endsWith('s'))
-			unNombre.substring(0, unNombre.length - 1)
-		else {
-			if (unNombre.endsWith('es'))
-				unNombre.substring(0, unNombre.length - 2)
-		}
-	}
-
-	def toPlural(String unNombre) {
-		if (unNombre.endsWith('s') || unNombre.endsWith('es'))
-			unNombre
-		else {
-			if (terminaConVocal(unNombre))
-				unNombre.concat('s')
-			else
-				unNombre.concat('es')
-		}
-	}
-	
-	def terminaConVocal(String unNombre) {
-		newArrayList('a', 'e', 'i', 'o', 'u').exists[unNombre.endsWith(it)]
-	}
 	
 	@Check
 	def checkPrecioPorKilo(ProductoConPrecio producto) {
