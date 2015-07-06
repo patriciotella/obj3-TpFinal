@@ -6,6 +6,7 @@ package textVerduler.validation
 import org.eclipse.xtext.validation.Check
 import textVerduler.textVerduler.Verduleria
 import static extension model.VerduleriaExtensions.*
+import static extension model.ProductoExtensions.*
 import java.util.List
 import textVerduler.textVerduler.TextVerdulerPackage
 import textVerduler.textVerduler.Venta
@@ -103,7 +104,7 @@ class TextVerdulerValidator extends AbstractTextVerdulerValidator {
 	
 	@Check
 	def checkPrecioPorKilo(ProductoConPrecio producto) {
-		if (producto.valor.descripcion.importe.valor > 200 && producto.valor.descripcion.cantidad.unidad == "kilo")
+		if (producto.precioEnKilos > 200.00f)
 			error(
 				"El producto no puede valer mas de 200 pesos el kilo.",
 				producto,
