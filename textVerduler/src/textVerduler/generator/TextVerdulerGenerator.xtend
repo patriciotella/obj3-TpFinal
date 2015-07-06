@@ -22,7 +22,7 @@ class TextVerdulerGenerator implements IGenerator {
 		val total = verduleria.totalDeVentas
 		val totalEnCaja = verduleria.gananciasTotales
 		val productosVendidos = verduleria.productosVendidos
-		val productosSinVender = verduleria.productosSinVender
+		val productosSinVender = verduleria.productosSinVender.map[name].toList
 
 		fsa.generateFile(
 			'verduleria.txt',
@@ -61,8 +61,13 @@ class TextVerdulerGenerator implements IGenerator {
 					«ENDFOR»
 				
 					No se vendieron:
-«««									« String.join(", ", productosSinVender.map[name]) »
-						«productosSinVender.map[name]»
+						«
+							productosSinVender.fold("") [result, name |
+								result + name + 
+									if(productosSinVender.indexOf(name) !=  productosSinVender.size - 1) ', '
+									else ''
+							]
+						»
 «««				«IF (!verduleria.hayConsultas.preguntas.isEmpty)»
 «««					«archivoDeConsultas(fsa, verduleria)»
 «««				«ENDIF»

@@ -35,22 +35,23 @@ class TextVerdulerValidator extends AbstractTextVerdulerValidator {
 		]
 	}
 
-//	@Check
-//	def checkProductoNoExiste(Verduleria verduleria) {
-//		val List<String> nombres = newArrayList()
-//		verduleria.productos.forEach [ producto |
-//			if (nombres.contains(producto.name))
-//				error(
-//					"El producto ya existe.",
-//					producto,
-//					producto.eClass.getEStructuralFeature(
-//						TextVerdulerPackage.PRODUCTO__NAME
-//					)
-//				)
-//			else
-//				nombres.add(producto.name)
-//		]
-//	}
+	@Check
+	def checkProductoNoExiste(Verduleria verduleria) {
+		val List<String> nombres = newArrayList()
+		verduleria.productos.forEach [ producto |
+			if (nombres.contains(producto.name))
+				error(
+					"El producto ya existe.",
+					producto,
+					producto.eClass.getEStructuralFeature(
+						TextVerdulerPackage.PRODUCTO__NAME
+					)
+				)
+			else
+				nombres.add(producto.name)
+		]
+	}
+	
 	@Check
 	def checkProductoPluralOSingular(Verduleria verduleria) {
 		val List<String> nombres = newArrayList()
@@ -77,30 +78,29 @@ class TextVerdulerValidator extends AbstractTextVerdulerValidator {
 	}
 
 	def getToSingular(String unNombre) {
-		var singular = ""
-		if (unNombre.endsWith('s')) {
-			singular = unNombre.substring(0, unNombre.length - 1)
-		} else if (unNombre.endsWith('es')) {
-			singular = unNombre.substring(0, unNombre.length - 2)
+		if (unNombre.endsWith('s'))
+			unNombre.substring(0, unNombre.length - 1)
+		else {
+			if (unNombre.endsWith('es'))
+				unNombre.substring(0, unNombre.length - 2)
 		}
-		singular
 	}
 
 	def toPlural(String unNombre) {
-		var plural = ""
-		if (unNombre.endsWith('s') || unNombre.endsWith('es')) {
-			plural = unNombre
-		} else {
-			if (unNombre.endsWith('a') || unNombre.endsWith('e') || unNombre.endsWith('i') || unNombre.endsWith('o') ||
-				unNombre.endsWith('u')) {
-				plural = unNombre.concat('s')
-			} else {
-				plural = unNombre.concat('es')
-			}
+		if (unNombre.endsWith('s') || unNombre.endsWith('es'))
+			unNombre
+		else {
+			if (terminaConVocal(unNombre))
+				unNombre.concat('s')
+			else
+				unNombre.concat('es')
 		}
-		plural
 	}
-
+	
+	def terminaConVocal(String unNombre) {
+		newArrayList('a', 'e', 'i', 'o', 'u').exists[unNombre.endsWith(it)]
+	}
+	
 	@Check
 	def checkPrecioPorKilo(ProductoConPrecio producto) {
 		if (producto.valor.descripcion.importe.valor > 200 && producto.valor.descripcion.cantidad.unidad == "kilo")

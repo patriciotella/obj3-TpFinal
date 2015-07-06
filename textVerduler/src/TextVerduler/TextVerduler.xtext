@@ -37,7 +37,7 @@ ProductoConPrecio:
 ;
 
 Producto:
-	("Las" | "Los")
+	("Las" | "La" | "El" | "Los")
 	name=ID
 ;
 
@@ -83,7 +83,7 @@ Mercaderia:
 ;
 
 ValorDelProducto:
-	'salen' (descripcion=PrecioPorCantidad)
+	('salen' | 'sale') (descripcion=PrecioPorCantidad)
 ;
 
 PrecioPorCantidad:
