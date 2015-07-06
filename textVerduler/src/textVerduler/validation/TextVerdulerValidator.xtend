@@ -7,10 +7,12 @@ import org.eclipse.xtext.validation.Check
 import textVerduler.textVerduler.Verduleria
 import static extension model.VerduleriaExtensions.*
 import static extension model.ProductoExtensions.*
+import static extension model.NameExtensions.*
 import java.util.List
 import textVerduler.textVerduler.TextVerdulerPackage
 import textVerduler.textVerduler.Venta
 import textVerduler.textVerduler.ProductoConPrecio
+import org.eclipse.emf.ecore.EObject
 
 /**
  * This class contains custom validation rules. 
@@ -21,35 +23,27 @@ class TextVerdulerValidator extends AbstractTextVerdulerValidator {
 
 	@Check
 	def checkClienteNoExiste(Verduleria verduleria) {
-		val List<String> nombres = newArrayList()
-		verduleria.clientes.forEach [ cliente |
-			if (nombres.contains(cliente.name))
-				error(
-					"El cliente ya existe.",
-					cliente,
-					cliente.eClass.getEStructuralFeature(
-						TextVerdulerPackage.CLIENTE__NAME
-					)
-				)
-			else
-				nombres.add(cliente.name)
-		]
+		checkElementosRepetidos(verduleria.clientes, TextVerdulerPackage.CLIENTE__NAME)
 	}
 
 	@Check
 	def checkProductoNoExiste(Verduleria verduleria) {
+		checkElementosRepetidos(verduleria.productos, TextVerdulerPackage.PRODUCTO__NAME)
+	}
+	
+	def checkElementosRepetidos(List<? extends EObject> lista, int errorMsg) {
 		val List<String> nombres = newArrayList()
-		verduleria.productos.forEach [ producto |
-			if (nombres.contains(producto.name))
+		lista.forEach [ elemento |
+			if (nombres.contains(elemento.name.toString.toLowerCase))
 				error(
-					"El producto ya existe.",
-					producto,
-					producto.eClass.getEStructuralFeature(
-						TextVerdulerPackage.PRODUCTO__NAME
+					'''El elemento ya existe.''',
+					elemento,
+					elemento.eClass.getEStructuralFeature(
+						errorMsg
 					)
 				)
 			else
-				nombres.add(producto.name)
+				nombres.add(elemento.name.toString.toLowerCase)
 		]
 	}
 	
@@ -104,7 +98,7 @@ class TextVerdulerValidator extends AbstractTextVerdulerValidator {
 	
 	@Check
 	def checkPrecioPorKilo(ProductoConPrecio producto) {
-		if (producto.precioEnKilos > 200.00f)
+		if (producto.precioEnKilos > 200)
 			error(
 				"El producto no puede valer mas de 200 pesos el kilo.",
 				producto,
