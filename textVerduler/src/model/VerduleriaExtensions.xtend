@@ -3,7 +3,7 @@ package model
 import textVerduler.textVerduler.Verduleria
 
 import static extension model.VentaExtensions.*
-import textVerduler.textVerduler.Producto
+import static extension model.NameExtensions.*
 import textVerduler.textVerduler.Cliente
 
 class VerduleriaExtensions {
@@ -31,18 +31,25 @@ class VerduleriaExtensions {
 	}
 	
 	def static getProductosVendidos(Verduleria unaVerduleria){
-		unaVerduleria.ventas.map[listaDeProductos].flatten.map[producto].toSet
+		unaVerduleria.ventas.map[listaDeProductos].flatten.map[toPlural(producto.toLowerCase)].toSet
 	}
 	
 	def static getProductosSinVender(Verduleria unaVerduleria) {
-		val productosVendidos = unaVerduleria.ventas.map[listaDeProductos].flatten.map[producto]
 		unaVerduleria.productos.filter[producto |
-			!productosVendidos.exists[equals(producto)]
+			!unaVerduleria.productosVendidos.exists[sonNombresIguales(it, producto.name)]
 		]
 	}
 	
-	def static totalVendidoDe(Verduleria unaVerduleria, Producto unProducto) {
-		val compras = unaVerduleria.ventas.map[listaDeProductos].flatten.filter[producto.name == unProducto.name]
+	def static tieneProductoConNombre(Verduleria unaVerduleria, String unNombreDeProducto) {
+		unaVerduleria.productos.map[name].exists[sonNombresIguales(it, unNombreDeProducto)]
+	}
+	
+	def static comprasDe(Verduleria unaVerduleria, String unProducto) {
+		unaVerduleria.ventas.map[listaDeProductos].flatten.filter[sonNombresIguales(producto, unProducto)]
+	}
+	
+	def static totalVendidoDe(Verduleria unaVerduleria, String unProducto) {
+		val compras = unaVerduleria.comprasDe(unProducto)
 		var resultado = 0f
 		for(compra : compras){
 			val unidad = compra.descripcion.unidad

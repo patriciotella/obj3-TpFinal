@@ -35,4 +35,8 @@ class NameExtensions {
 	def static terminaConVocal(String unNombre) {
 		newArrayList('a', 'e', 'i', 'o', 'u').exists[unNombre.endsWith(it)]
 	}
+	
+	def static sonNombresIguales(String unNombre, String otroNombre) {
+		toPlural(unNombre.toLowerCase) == toPlural(otroNombre.toLowerCase)
+	}
 }

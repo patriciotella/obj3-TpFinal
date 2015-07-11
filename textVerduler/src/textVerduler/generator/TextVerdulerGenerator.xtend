@@ -57,7 +57,7 @@ class TextVerdulerGenerator implements IGenerator {
 				
 				Productos:
 					«FOR producto : productosVendidos»
-						« producto.name », total vendido « verduleria.totalVendidoDe(producto) » kilos
+						« producto », total vendido « verduleria.totalVendidoDe(producto) » kilos
 					«ENDFOR»
 				
 					No se vendieron:

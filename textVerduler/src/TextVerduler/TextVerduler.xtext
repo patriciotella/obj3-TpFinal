@@ -58,7 +58,19 @@ HoraDeInicio:
 ;
 
 Tarea:
-	'Tarea:' ("limpieza del local"|"revision de" producto=[Producto]|"arqueo de caja" balance=Balance)
+	'Tarea:' (LimpiezaDeLocal | RevisionDeProducto | ArqueoDeCaja)
+;
+
+LimpiezaDeLocal:
+	"limpieza del local"
+;
+
+RevisionDeProducto:
+	"revision de" producto=STRING
+;
+
+ArqueoDeCaja:
+	"arqueo de caja" balance=Balance
 ;
 
 Balance:
@@ -79,7 +91,7 @@ TotalDeCompra:
 
 Mercaderia:
 	descripcion=Cantidad
-	'de' producto=[Producto]
+	'de' producto=STRING
 ;
 
 ValorDelProducto:

@@ -13,6 +13,7 @@ import textVerduler.textVerduler.TextVerdulerPackage
 import textVerduler.textVerduler.Venta
 import textVerduler.textVerduler.ProductoConPrecio
 import org.eclipse.emf.ecore.EObject
+import textVerduler.textVerduler.RevisionDeProducto
 
 /**
  * This class contains custom validation rules. 
@@ -48,18 +49,48 @@ class TextVerdulerValidator extends AbstractTextVerdulerValidator {
 	}
 	
 	@Check
+	def checkCompraDeProductoExistente(Verduleria verduleria) {
+		verduleria.ventas.map[listaDeProductos].forEach [ listaDeProductos |
+			listaDeProductos.forEach[ mercaderia |
+				if(!verduleria.tieneProductoConNombre(mercaderia.producto))
+					error(
+						'''El producto no existe.''',
+						mercaderia,
+						mercaderia.eClass.getEStructuralFeature(
+							TextVerdulerPackage.MERCADERIA__PRODUCTO
+						)
+					)
+			]
+		]
+	}
+	
+	//ARREGLAR
+	@Check
+	def checkProductoEnTareaExiste(Verduleria verduleria) {
+		verduleria.tareasRealizadas.filter(RevisionDeProducto).forEach [ tarea |
+			if(!verduleria.tieneProductoConNombre(tarea.producto))
+				error(
+					'''El producto no existe.''',
+					tarea,
+					tarea.eClass.getEStructuralFeature(
+						TextVerdulerPackage.REVISION_DE_PRODUCTO__PRODUCTO
+					)
+				)
+		]
+	}
+	
+	@Check
 	def checkProductoPluralOSingular(Verduleria verduleria) {
 		val List<String> nombres = newArrayList()
 		verduleria.productos.forEach [ producto |
-			var String productoASingular
-			var String productoAPlural
-			productoASingular = producto.name
-			productoAPlural = producto.name.toPlural
-			if (productoAPlural == producto.name) {
-				productoASingular = producto.name.toSingular
-			}
-			if (nombres.contains(productoASingular) || nombres.contains(producto.name) ||
-				nombres.contains(productoAPlural))
+			var nombre = producto.name.toLowerCase
+			var nombreEnSingular = nombre
+			var nombreEnPlural = nombre.toPlural
+			if (nombreEnPlural == nombre)
+				nombreEnSingular = nombre.toSingular
+			
+			if (nombres.contains(nombreEnSingular) || nombres.contains(producto.name) ||
+				nombres.contains(nombreEnPlural))
 				error(
 					"El producto ya existe, plural o singular es lo mismo",
 					producto,
@@ -68,7 +99,7 @@ class TextVerdulerValidator extends AbstractTextVerdulerValidator {
 					)
 				)
 			else
-				nombres.add(producto.name)
+				nombres.add(nombre)
 		]
 	}
 	
@@ -103,7 +134,7 @@ class TextVerdulerValidator extends AbstractTextVerdulerValidator {
 		verduleria.ventas.forEach [ venta |
 			venta.listaDeProductos.forEach [ mercaderia |
 				val productoOriginal = verduleria.productosConPrecio.findFirst [
-					it.producto.name == mercaderia.producto.name
+					sonNombresIguales(it.producto.name, mercaderia.producto)
 				]
 				if (productoOriginal.valor.descripcion.cantidad.unidad == "gramos" &&
 					(mercaderia.descripcion.cantidad > 4 && mercaderia.descripcion.unidad == "kilos"))
