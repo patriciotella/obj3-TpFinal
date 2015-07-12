@@ -29,17 +29,13 @@ class TextVerdulerGenerator implements IGenerator {
 				Clientes:
 				
 					« printer.mostrarClientesConBalance(verduleria.deudores.toList, 'Deben', [- verduleria.balanceCliente(it)]) »
-					
 					« printer.mostrarClientesConBalance(verduleria.clientesConDineroAFavor.toList, 'Tienen credito', [verduleria.balanceCliente(it)]) »
-					
 					« printer.mostrarClientes(verduleria.clientesAlDia.toList, "Al dia") »
-					
 					« printer.mostrarClientes(verduleria.clientesQueNoCompraron.toList, "No hicieron compras") »
 				
 				Productos:
 				
 					« printer.mostrarProductosVendidos(verduleria) »
-				
 					« printer.mostrarProductosSinVender(verduleria) »
 					
 «««				«IF (!verduleria.hayConsultas.preguntas.isEmpty)»
