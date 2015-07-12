@@ -1,6 +1,8 @@
 package model
 
 import textVerduler.textVerduler.ProductoConPrecio
+import textVerduler.textVerduler.RevisionDeProducto
+import textVerduler.textVerduler.Mercaderia
 
 class ProductoExtensions {
 	def static precioEnKilos(ProductoConPrecio unProducto) {
@@ -15,5 +17,13 @@ class ProductoExtensions {
 			return precio * 2f
 		if(unidad == "cuarto kilo")
 			precio * 4f
+	}
+	
+	def static dispatch producto(RevisionDeProducto tarea) {
+		tarea.producto
+	}
+	
+	def static dispatch producto(Mercaderia mercaderia) {
+		mercaderia.producto
 	}
 }

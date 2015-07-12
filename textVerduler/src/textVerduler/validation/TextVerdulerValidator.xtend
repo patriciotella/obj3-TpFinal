@@ -50,32 +50,26 @@ class TextVerdulerValidator extends AbstractTextVerdulerValidator {
 	
 	@Check
 	def checkCompraDeProductoExistente(Verduleria verduleria) {
-		verduleria.ventas.map[listaDeProductos].forEach [ listaDeProductos |
-			listaDeProductos.forEach[ mercaderia |
-				if(!verduleria.tieneProductoConNombre(mercaderia.producto))
-					error(
-						'''El producto no existe.''',
-						mercaderia,
-						mercaderia.eClass.getEStructuralFeature(
-							TextVerdulerPackage.MERCADERIA__PRODUCTO
-						)
-					)
-			]
-		]
+		val productosComprados = verduleria.ventas.map[listaDeProductos].flatten.toList
+		checkearErrorEnProducto(verduleria, productosComprados, TextVerdulerPackage.MERCADERIA__PRODUCTO)
 	}
 	
-	//ARREGLAR
 	@Check
 	def checkProductoEnTareaExiste(Verduleria verduleria) {
-		verduleria.tareasRealizadas.filter(RevisionDeProducto).forEach [ tarea |
-			if(!verduleria.tieneProductoConNombre(tarea.producto))
-				error(
-					'''El producto no existe.''',
-					tarea,
-					tarea.eClass.getEStructuralFeature(
-						TextVerdulerPackage.REVISION_DE_PRODUCTO__PRODUCTO
+		val tareas = verduleria.tareasRealizadas.map[tarea].filter(RevisionDeProducto).toList
+		checkearErrorEnProducto(verduleria, tareas, TextVerdulerPackage.REVISION_DE_PRODUCTO__PRODUCTO)
+	}
+	
+	def checkearErrorEnProducto(Verduleria verduleria, List<? extends EObject> elementosConProducto, int errorMsg) {
+		elementosConProducto.forEach [elemento |
+			if(!verduleria.tieneProductoConNombre(elemento.producto))
+					error(
+						'''El producto no existe.''',
+						elemento,
+						elemento.eClass.getEStructuralFeature(
+							errorMsg
+						)
 					)
-				)
 		]
 	}
 	
