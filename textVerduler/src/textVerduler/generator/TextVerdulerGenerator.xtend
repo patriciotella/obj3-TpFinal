@@ -19,55 +19,29 @@ class TextVerdulerGenerator implements IGenerator {
 
 	override void doGenerate(Resource resource, IFileSystemAccess fsa) {
 		val verduleria = resource.allContents.filter(Verduleria).head
-		val total = verduleria.totalDeVentas
-		val totalEnCaja = verduleria.gananciasTotales
-		val productosVendidos = verduleria.productosVendidos
-		val productosSinVender = verduleria.productosSinVender.map[name].toList
-
+		val printer = new Printer
 		fsa.generateFile(
 			'verduleria.txt',
 			'''
 				Totales:
-				
-					Se vendio por un total de «total» pesos.
-				
-					Se recaudaron en total «totalEnCaja» pesos.
+					« printer.mostrarTotalesDe(verduleria) »
 				
 				Clientes:
 				
-					Deben: 
-						«FOR cliente : verduleria.deudores»
-							« cliente.name » « - verduleria.balanceCliente(cliente) » pesos
-						«ENDFOR»
-				
-					Tienen credito: 
-						«FOR cliente : verduleria.clientesConDineroAFavor»
-							« cliente.name » « verduleria.balanceCliente(cliente) » pesos
-						«ENDFOR»
-				
-					Al dia: 
-						«FOR cliente : verduleria.clientesAlDia»
-							« cliente.name »
-						«ENDFOR»
-				
-					No hicieron compras:
-						«FOR cliente : verduleria.clientesQueNoCompraron»
-							« cliente.name »
-						«ENDFOR»
+					« printer.mostrarClientesConBalance(verduleria.deudores.toList, 'Deben', [- verduleria.balanceCliente(it)]) »
+					
+					« printer.mostrarClientesConBalance(verduleria.clientesConDineroAFavor.toList, 'Tienen credito', [verduleria.balanceCliente(it)]) »
+					
+					« printer.mostrarClientes(verduleria.clientesAlDia.toList, "Al dia") »
+					
+					« printer.mostrarClientes(verduleria.clientesQueNoCompraron.toList, "No hicieron compras") »
 				
 				Productos:
-					«FOR producto : productosVendidos»
-						« producto », total vendido « verduleria.totalVendidoDe(producto) » kilos
-					«ENDFOR»
 				
-					No se vendieron:
-						«
-							productosSinVender.fold("") [result, name |
-								result + name + 
-									if(productosSinVender.indexOf(name) !=  productosSinVender.size - 1) ', '
-									else ''
-							]
-						»
+					« printer.mostrarProductosVendidos(verduleria) »
+				
+					« printer.mostrarProductosSinVender(verduleria) »
+					
 «««				«IF (!verduleria.hayConsultas.preguntas.isEmpty)»
 «««					«archivoDeConsultas(fsa, verduleria)»
 «««				«ENDIF»
