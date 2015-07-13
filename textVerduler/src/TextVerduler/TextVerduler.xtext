@@ -105,7 +105,8 @@ PrecioPorCantidad:
 Cantidad:
 	articulo=Articulo?
 	cantidad=INT?
-	unidad=("kilo"|"kilos"|"medio kilo"|"cuarto kilo"|"gramos")
+	unidad=("gramos"|"cuarto kilo"|"medio kilo"|"kilo"|"kilos")
+	
 ;
 
 Articulo:

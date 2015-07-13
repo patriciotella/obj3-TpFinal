@@ -16,7 +16,7 @@ class ProductoExtensions {
 		if(unidad == "medio kilo")
 			return precio * 2f
 		if(unidad == "cuarto kilo")
-			precio * 4f
+			return precio * 4f
 	}
 	
 	def static dispatch producto(RevisionDeProducto tarea) {

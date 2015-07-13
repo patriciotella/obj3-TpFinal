@@ -3,6 +3,13 @@
  */
 package textVerduler.ui.contentassist
 
+import org.eclipse.emf.ecore.EObject
+import org.eclipse.jface.text.contentassist.ICompletionProposal
+import org.eclipse.xtext.Assignment
+import org.eclipse.xtext.ui.editor.contentassist.ConfigurableCompletionProposal
+import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext
+import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor
+import textVerduler.textVerduler.Verduleria
 import textVerduler.ui.contentassist.AbstractTextVerdulerProposalProvider
 
 /**
@@ -10,4 +17,35 @@ import textVerduler.ui.contentassist.AbstractTextVerdulerProposalProvider
  * on how to customize the content assistant.
  */
 class TextVerdulerProposalProvider extends AbstractTextVerdulerProposalProvider {
+	override completeMercaderia_Producto(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		super.completeMercaderia_Producto(model, assignment, context, acceptor)
+		showProductProporsals(model, acceptor, context)
+	}
+	
+	override completeRevisionDeProducto_Producto(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		super.completeMercaderia_Producto(model, assignment, context, acceptor)
+		showProductProporsals(model, acceptor, context)		
+	}
+	
+	def showProductProporsals(EObject model, ICompletionProposalAcceptor acceptor, ContentAssistContext context) {
+		val verduleria = model.eResource.allContents.filter(Verduleria).head
+		val nombres = verduleria.productosConPrecio.map[producto.name].toList
+		nombres.forEach [nombre |
+			acceptor.accept(
+				createCompletionProposal("'" + nombre + "'", context).withPriority(5000))
+		]
+	}
+	
+	def dispatch withPriority(ICompletionProposal proposal, int pri) {
+		proposal
+	}
+
+	def dispatch withPriority(ConfigurableCompletionProposal proposal, int pri) {
+		proposal.priority = pri
+		proposal
+	}
+	
+	def dispatch withPriority(Void proposal, int pri) {
+		null as ICompletionProposal
+	}
 }
